@@ -1,30 +1,113 @@
-import styled from 'styled-components'
+import { useState } from 'react';
+import useLocalStorage from 'use-local-storage';
 import { useWeb3 } from '@3rdweb/hooks'
-import { ThirdwebProvider } from "@3rdweb/react";
+import { client } from '../sanity';
+import styled from 'styled-components';
+import { useRouter } from 'next/router';
 import Dashboard from './Dashboard'
- 
-export default function Home() {
- 
-  const { address, connectWallet } = useWeb3();
-  return (
-    <Wrapper>
-      {address ? (
-        <Dashboard address={address} />
-      ) : (
-        <WalletConnect>
-          <Button onClick={() => connectWallet('injected')}>
-            Connect Wallet
-          </Button>
-          <Details>
-            You need Chrome to be
-            <br /> able to run this app.
-          </Details>
-        </WalletConnect>
-      )}
-    </Wrapper>
-  )
-}
+const LoginForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.2);
+  margin: 50px auto;
+  max-width: 400px;
 
+  & > * {
+    margin-bottom: 10px;
+  }
+
+  & > button {
+    width: 100%;
+    background-color: #0070f3;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+  }
+
+  & > button:hover {
+    background-color: #0062cc;
+  }
+
+  & > label {
+    font-weight: bold;
+  }
+
+  & > input {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 100%;
+  }
+`;
+export default function LoginPage() {
+    const { address, connectWallet } = useWeb3();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [userId, setUserId] = useLocalStorage('userId', '');
+    const [user, setUser] = useState(null);
+    const router = useRouter();
+    const [firstName, setFirstName] = useState('');
+  
+    const handleLogin = async (event) => {
+      event.preventDefault();
+      const query = `*[_type == "user" && email == "${email}" && password == "${password}"][0]`;
+      const user = await client.fetch(query);
+      setUser(user);
+      setFirstName(user.firstName); // Store the user's firstName in a state variable
+      setUserId(user._id);
+    };
+    console.log(firstName);
+    // if (address) {
+    //   router.replace('/');
+    // }
+  
+    return (
+        <>
+          {user ? (
+           <Wrapper>
+           {address ? (
+             <Dashboard  user={user} address={address}/>
+           ) : (
+             <WalletConnect>
+               <Button onClick={() => connectWallet('injected')}>
+                 Connect Wallet
+               </Button>
+               <Details>
+                 You need Chrome to be
+                 <br /> able to run this app.
+               </Details>
+             </WalletConnect>
+           )}
+         </Wrapper>
+          ) : (
+            <LoginForm onSubmit={handleLogin}>
+              <label htmlFor="email">Email</label>
+              <input
+                type="email"
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <label htmlFor="password">Password</label>
+              <input
+                type="password"
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <button type="submit">Login</button>
+            </LoginForm>
+          )}
+        </>
+      );
+  }
 const Wrapper = styled.div`
   display: flex;
   height: 100vh;

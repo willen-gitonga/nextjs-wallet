@@ -11,8 +11,8 @@ const Receive = ({ setAction, selectedToken, walletAddress }) => {
   const [builder] = useState(imageUrlBuilder(client))
 
   useEffect(() => {
-    const url = builder.image(selectedToken.logo.asset._ref).url()
-    setImageUrl(url)
+    // const url = builder.image(selectedToken?.logo.asset._ref).url()
+    // setImageUrl(url)
   }, [selectedToken, builder])
 
   return (
@@ -29,18 +29,18 @@ const Receive = ({ setAction, selectedToken, walletAddress }) => {
             <Icon>
               <img src={imageUrl} alt='' />
             </Icon>
-            <CoinName>{selectedToken.name}</CoinName>
+            <CoinName>{selectedToken?.name}</CoinName>
           </CoinSelectList>
         </Row>
         <Divider />
         <Row>
           <div>
-            <Title>{selectedToken.symbol} Address</Title>
-            <Address>{selectedToken.contractAddress}</Address>
+            <Title>{selectedToken?.symbol} Address</Title>
+            <Address>{walletAddress}</Address>
           </div>
           <CopyButton
             onClick={() => {
-              navigator.clipboard.writeText(selectedToken.contractAddress)
+              navigator.clipboard.writeText(walletAddress)
               setCopied(true)
             }}
           >

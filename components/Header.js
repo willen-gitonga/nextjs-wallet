@@ -3,10 +3,10 @@ import Modal from 'react-modal'
 import { useRouter } from 'next/router'
 import TransferModal from './modalComponents/TransferModal'
 import Link from 'next/link'
-
+import useLocalStorage from 'use-local-storage';
 Modal.setAppElement('#__next')
 
-const Header = ({ twTokens, sanityTokens, walletAddress, connectWallet }) => {
+const Header = ({ twTokens, sanityTokens, walletAddress, connectWallet}) => {
   const router = useRouter()
 
   const customStyles = {
@@ -24,7 +24,8 @@ const Header = ({ twTokens, sanityTokens, walletAddress, connectWallet }) => {
       backgroundColor: 'rgba(10, 11, 13, 0.75)',
     },
   }
-
+  const firstName = localStorage.getItem("firstName");
+  console.log(firstName);
   return (
     <Wrapper>
       <Title>Assets</Title>
@@ -41,19 +42,23 @@ const Header = ({ twTokens, sanityTokens, walletAddress, connectWallet }) => {
             Connect Wallet
           </Button>
         )}
+        <Link href={'/payment'}>
         <Button style={{ backgroundColor: '#3773f5', color: '#000' }}>
-          Buy / Sell
+          Load Wallet
         </Button>
-        <Link href={'/?transfer=1'}>
+        </Link>
+        <Link href={'/wallet/?transfer=1'}>
           <Button>Send / Receive</Button>
         </Link>
       </ButtonsContainer>
       <Separator />
       <ProfileIcon />
+      
+      {firstName && <div>Welcome, {firstName}!</div>} {/* Display the firstName */}
 
       <Modal
         isOpen={!!router.query.transfer}
-        onRequestClose={() => router.push('/')}
+        onRequestClose={() => router.push('/wallet')}
         style={customStyles}
       >
         <TransferModal
@@ -63,7 +68,7 @@ const Header = ({ twTokens, sanityTokens, walletAddress, connectWallet }) => {
         />
       </Modal>
     </Wrapper>
-  )
+  );
 }
 
 export default Header

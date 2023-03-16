@@ -12,8 +12,8 @@ const Sidebar = () => {
     <Wrapper>
       <LogoContainer>
         <Logo>
-          <Image src={CoinbaseLogo} alt='Coinbase Logo' 
-          width={200}/>
+          {/* <Image src={CoinbaseLogo} alt='Coinbase Logo' 
+          width={200}/> */}
         </Logo>
       </LogoContainer>
       <NavItemsContainer>
