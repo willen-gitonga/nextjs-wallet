@@ -1,5 +1,13 @@
 import { useState } from 'react';
 import Header from '../components/Header'
+import { ethers } from "ethers";
+import ContractABI from '../ContractABI.json'
+import { sepolia } from "@thirdweb-dev/chains";
+import { ThirdwebSDK } from "@thirdweb-dev/sdk/evm";
+
+const sdk = new ThirdwebSDK("sepolia");
+
+const contractAddress = "0x8F3430b9ECeC52801611E5C13bB4477f90581f84";
 
 const PesapalPayment = () => {
   const [amount, setAmount] = useState('');
@@ -12,6 +20,7 @@ const PesapalPayment = () => {
   const [line1, setLine1] = useState('');
 
    const handlePayment = async () => {
+    mintTokens(amount);
     //Request an access token
     const accessToken = await requestAccessToken();
 
@@ -20,9 +29,14 @@ const PesapalPayment = () => {
 
     // Submit the payment order request
     const paymentOrderResponse = await submitPaymentOrderRequest(accessToken, ipnId);
-
+    
     // Load the payment iframe
     setIframeSrc(paymentOrderResponse.redirect_url);
+    const paymentStatus = await getTransactionStatus(accessToken, paymentOrderResponse.orderTrackingId);
+    console.log(paymentStatus); // or update state or perform other actions based on the payment status
+    if (paymentStatus.status_code === 1) {
+      mintTokens(amount);
+    }
   };
 
   const requestAccessToken = async () => {
@@ -34,8 +48,8 @@ const PesapalPayment = () => {
         'Accept': 'application/json'
       },
       body: JSON.stringify({
-        consumer_key: '',
-        consumer_secret: ''
+        consumer_key: 'qkio1BGGYAXTu2JOfm7XSXNruoZsrqEW',
+        consumer_secret: 'osGQ364R49cXKeOYSpaOnT++rHs='
       })
     });
   
@@ -68,7 +82,7 @@ const PesapalPayment = () => {
       currency: 'KES',
       amount: Number(amount),
       description: 'Payment description goes here',
-      callback_url: 'https://www.myapplication.com/response-page',
+      callback_url: 'http://localhost:3000/wallet',
       notification_id: ipnId,
       billing_address: {
         email_address: email,
@@ -99,7 +113,45 @@ const PesapalPayment = () => {
     console.log(data);
     return data;
   };
+  const getTransactionStatus = async (accessToken, orderTrackingId) => {
+    const response = await fetch(`https://cybqa.pesapal.com/pesapalv3/api/Transactions/GetTransactionStatus?orderTrackingId=${orderTrackingId}`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+      },
+    });
+    const data = await response.json();
+    if (data.status_code==1){
+      mintTokens(amount);
+    }
+    console.log(data);
+    return data;
+  };
+  const mintTokens = async (amount) => {
+    try {
+      const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner(accounts[0]);
+      const sdkWithSigner = ThirdwebSDK.fromSigner(signer);
 
+     
+
+      if (amount === undefined) {
+        console.error("Amount is not defined.");
+        return;
+      }
+
+      const contract = await sdkWithSigner.getContract(contractAddress);
+      console.log(contract);
+      await contract.erc20.mint(amount);
+      // const receipt = await tx.wait();
+      // console.log(receipt);
+
+    } catch (error) {
+        console.error(error);
+    }
+  };
   return (
     
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>

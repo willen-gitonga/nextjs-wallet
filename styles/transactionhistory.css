@@ -1,0 +1,89 @@
+.transactions-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.mint-transactions,
+.transfer-transactions,
+.receive-transactions {
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.mint-transactions {
+  margin-right: 10px;
+}
+
+.transfer-transactions {
+  margin-left: 10px;
+}
+
+.transaction-tabs {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.transaction-tab {
+  cursor: pointer;
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-right: 10px;
+}
+
+.transaction-tab.active {
+  background-color: #3773f5;
+  color: black;
+}
+
+.transaction-tab:hover {
+  background-color: #3773f5;
+  color: black;
+}
+
+.active-mint-transactions,
+.active-transfer-transactions,
+.active-receive-transactions {
+  display: block;
+}
+
+.inactive-mint-transactions,
+.inactive-transfer-transactions,
+.inactive-receive-transactions {
+  display: none;
+}
+
+.transaction-card {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+}
+
+.transaction-card p {
+  margin: 0;
+}
+
+.transaction-card .transaction-info {
+  display: flex;
+  align-items: center;
+}
+
+.transaction-card .transaction-info p {
+  margin-right: 10px;
+}
+
+.transaction-card .transaction-info p:nth-child(2) {
+  flex-basis: 50%;
+  text-align: right;
+}
+
+.transaction-card .transaction-info p:nth-child(4) {
+  flex-basis: 50%;
+  text-align: right;
+}

@@ -1,9 +1,10 @@
 /** @type {import('next').NextConfig} */
-// const nextConfig = {
-//   reactStrictMode: true,
-// }
+const nextConfig = {
+  reactStrictMode: false,
+  api: "api.js",
+}
 
-// module.exports = nextConfig
+module.exports = nextConfig
 
 module.exports = {
   env: {
@@ -13,3 +14,4 @@ module.exports = {
     JWT_SECRET: "ywizhagJsxucdv0p8QiPsrFyFgSdmnQT3xNMTVd2pkM=",
   },
 };
+

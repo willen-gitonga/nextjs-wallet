@@ -59,7 +59,7 @@ const Portfolio = ({ twTokens, sanityTokens, walletAddress }) => {
           </div>
           <BalanceChart />
         </Chart>
-        <PortfolioTable>
+        {/* <PortfolioTable>
           <TableItem>
             <Title>Your Assets</Title>
           </TableItem>
@@ -86,7 +86,7 @@ const Portfolio = ({ twTokens, sanityTokens, walletAddress }) => {
               ))}
             </div>
           </Table>
-        </PortfolioTable>
+        </PortfolioTable> */}
       </Content>
     </Wrapper>
   )

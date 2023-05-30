@@ -10,8 +10,6 @@ const CONTRACT_ABI = ContractABI;
 
 export default function TransactionHistory() {
   const [transactions, setTransactions] = useState([]);
-  const [linetransactions, setlineTransactions] = useState([]);
-  const [transferTransactions, setTransferTransactions] = useState([]);
   const [activeTab, setActiveTab] = useState("mint");
   const [receivedTransactions, setReceivedTransactions] = useState([]);
   const [walletAddress, setWalletAddress] = useState('');
@@ -29,12 +27,6 @@ export default function TransactionHistory() {
       setWalletAddress(address);
 
       const response = await contract.getPastEvents("Transfer", {
-        filter: { to: address },
-        fromBlock: 0,
-        toBlock: "latest"
-      });
-
-      const transferResponse = await contract.getPastEvents("Transfer", {
         filter: { from: address },
         fromBlock: 0,
         toBlock: "latest"
@@ -43,15 +35,6 @@ export default function TransactionHistory() {
       // Loop through each transaction and query its block for the timestamp
       const txsWithTimestamps = await Promise.all(
         response.map(async (tx) => {
-          const block = await web3.eth.getBlock(tx.blockNumber);
-          const timestamp = block.timestamp;
-          const isMint = tx.returnValues.from === '0x0000000000000000000000000000000000000000';
-          const transactionType = isMint ? 'Deposit' : 'Transfer';
-          return { ...tx, timestamp, transactionType };
-        })
-      );
-      const transferTxsWithTimestamps = await Promise.all(
-        transferResponse.map(async (tx) => {
           const block = await web3.eth.getBlock(tx.blockNumber);
           const timestamp = block.timestamp;
           const isMint = tx.returnValues.from === '0x0000000000000000000000000000000000000000';
@@ -76,10 +59,9 @@ export default function TransactionHistory() {
           return { ...tx, timestamp, transactionType, fromAddress };
         })
       );
-       setTransactions(txsWithTimestamps);
+      
       setReceivedTransactions(receivedTxsWithTimestamps);
-      setTransferTransactions(transferTxsWithTimestamps);
-     
+      setTransactions(txsWithTimestamps);
     }
 
     fetchTransactions();
@@ -131,42 +113,41 @@ export default function TransactionHistory() {
       </div>
 
       <div className="transactions-container">
-      <div
-  className={`mint-transactions ${
-    activeTab === "mint" ? "active-mint-transactions" : "inactive-mint-transactions"
-  }`}
->
-  <h2>Deposit Transactions</h2>
-  {transactions
-    .filter((tx) => tx.transactionType === "Deposit")
-    .map((tx) => (
-      <div key={tx.transactionHash} className="transaction-card" onClick={() => console.log(tx)}>
-        <div className="transaction-info">
-          <p>To: {tx.returnValues.to}</p>
-          <p>Amount: {parseFloat(tx.returnValues.value) / 10 ** 18} USDT</p>
+        <div
+          className={`mint-transactions ${
+            activeTab === "mint" ? "active-mint-transactions" : "inactive-mint-transactions"
+          }`}
+        >
+          <h2>Deposit Transactions</h2>
+          {transactions
+            .filter((tx) => tx.transactionType === "Deposit")
+            .map((tx) => (
+              <div key={tx.transactionHash} className="transaction-card" onClick={() => console.log(tx)}>
+                <div className="transaction-info">
+                  <p>To: {tx.returnValues.to}</p>
+                  <p>Amount: {parseFloat(tx.returnValues.value) / 10 ** 18} USDT</p>
+                </div>
+                <div className="transaction-info">
+                  <p>
+                    Timestamp:{" "}
+                    {new Date(tx.timestamp * 1000).toLocaleString("en-US", {
+                      timeZone: "Africa/Nairobi",
+                    })}
+                  </p>
+                  {/* {activeTab === "mint" && (
+                    <p>From: {tx.returnValues.from}</p>
+                  )} */}
+                </div>
+              </div>
+            ))}
         </div>
-        <div className="transaction-info">
-          <p>
-            Timestamp:{" "}
-            {new Date(tx.timestamp * 1000).toLocaleString("en-US", {
-              timeZone: "Africa/Nairobi",
-            })}
-          </p>
-          {/* {activeTab === "mint" && (
-            <p>From: {tx.returnValues.from}</p>
-          )} */}
-        </div>
-      </div>
-    ))}
-</div>
-
         <div
           className={`transfer-transactions ${
             activeTab === "transfer" ? "active-transfer-transactions" : "inactive-transfer-transactions"
           }`}
         >
           <h2>Transfer Transactions</h2>
-          {transferTransactions
+          {transactions
             .filter((tx) => tx.transactionType === "Transfer")
             .map((tx) => (
               <div key={tx.transactionHash} className="transaction-card" onClick={() => console.log(tx)}>
@@ -189,31 +170,29 @@ export default function TransactionHistory() {
             ))}
         </div>
         <div
-  className={`receive-transactions ${
-    activeTab === "receive" ? "active-receive-transactions" : "inactive-receive-transactions"
-  }`}
->
-  <h2>Received Transactions</h2>
-  {receivedTransactions
-    .filter((tx) => tx.transactionType === "Transfer" && tx.returnValues.from !== '0x0000000000000000000000000000000000000000')
-    .map((tx) => (
-      <div key={tx.transactionHash} className="transaction-card" onClick={() => console.log(tx)}>
-        <div className="transaction-info">
-          <p>From: {tx.returnValues.from}</p>
-          <p>Amount: {parseFloat(tx.returnValues.value) / 10 ** 18} USDT</p>
+          className={`receive-transactions ${
+            activeTab === "receive" ? "active-receive-transactions" : "inactive-receive-transactions"
+          }`}
+        >
+          <h2>Received Transactions</h2>
+          {receivedTransactions
+            .map((tx) => (
+              <div key={tx.transactionHash} className="transaction-card" onClick={() => console.log(tx)}>
+                <div className="transaction-info">
+                  <p>From: {tx.returnValues.from}</p>
+                  <p>Amount: {parseFloat(tx.returnValues.value) / 10 ** 18} USDT</p>
+                </div>
+                <div className="transaction-info">
+                  <p>
+                    Timestamp:{" "}
+                    {new Date(tx.timestamp * 1000).toLocaleString("en-US", {
+                      timeZone: "Africa/Nairobi",
+                    })}
+                  </p>
+                </div>
+              </div>
+            ))}
         </div>
-        <div className="transaction-info">
-          <p>
-            Timestamp:{" "}
-            {new Date(tx.timestamp * 1000).toLocaleString("en-US", {
-              timeZone: "Africa/Nairobi",
-            })}
-          </p>
-        </div>
-      </div>
-    ))}
-</div>
-
       </div>
     </div>
   );
