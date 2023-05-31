@@ -33,8 +33,8 @@ const Transfer = ({ setAction, twTokens, selectedToken, walletAddress }) => {
   }, [activeTwToken, sender])
 
   useEffect(() => {
-    // const url = builder.image(selectedToken?.logo?.asset?._ref).url()
-    // setImageUrl(url)
+    const url = builder.image(selectedToken?.logo?.asset?._ref).url()
+    setImageUrl(url)
   }, [selectedToken, builder])
 
   const sendCrypto = async () => {

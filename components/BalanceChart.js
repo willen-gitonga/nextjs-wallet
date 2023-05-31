@@ -15,7 +15,7 @@ export default function TransactionHistory() {
   const [activeTab, setActiveTab] = useState("mint");
   const [receivedTransactions, setReceivedTransactions] = useState([]);
   const [walletAddress, setWalletAddress] = useState('');
-
+  const [balanceData, setBalanceData] = useState([]);
   useEffect(() => {
     async function fetchTransactions() {
       await Moralis.start({ apiKey: MORALIS_API_KEY });
@@ -27,6 +27,12 @@ export default function TransactionHistory() {
       const accounts = await web3.eth.getAccounts();
       const address = accounts[0];
       setWalletAddress(address);
+
+      const balanceresponse = await contract.getPastEvents("Transfer", {
+        filter: { $or: [{ to: address }, { from: address }] },
+        fromBlock: 0,
+        toBlock: "latest"
+      });
 
       const response = await contract.getPastEvents("Transfer", {
         filter: { to: address },
@@ -40,6 +46,30 @@ export default function TransactionHistory() {
         toBlock: "latest"
       });
 
+      const balancetxsWithTimestamps = await Promise.all(
+        balanceresponse.map(async (tx) => {
+          const block = await web3.eth.getBlock(tx.blockNumber);
+          const timestamp = block.timestamp;
+          const isMint = tx.returnValues.from === '0x0000000000000000000000000000000000000000';
+          const transactionType = isMint ? 'Deposit' : 'Transfer';
+          return { ...tx, timestamp, transactionType };
+        })
+      );
+      const sortedTransactions = balancetxsWithTimestamps.sort((a, b) => a.timestamp - b.timestamp);
+
+      const balance = [];
+      let currentBalance = 0;
+
+      sortedTransactions.forEach((tx) => {
+        const { returnValues, timestamp } = tx;
+        const { from, to, value } = returnValues;
+        if (from.toLowerCase() === address.toLowerCase()) {
+          currentBalance -= parseFloat(value);
+        } else if (to.toLowerCase() === address.toLowerCase()) {
+          currentBalance += parseFloat(value);
+        }
+        balance.push({ timestamp, balance: currentBalance });
+      });
       // Loop through each transaction and query its block for the timestamp
       const txsWithTimestamps = await Promise.all(
         response.map(async (tx) => {
@@ -79,7 +109,7 @@ export default function TransactionHistory() {
        setTransactions(txsWithTimestamps);
       setReceivedTransactions(receivedTxsWithTimestamps);
       setTransferTransactions(transferTxsWithTimestamps);
-     
+      setBalanceData(balance);
     }
 
     fetchTransactions();
@@ -88,16 +118,16 @@ export default function TransactionHistory() {
   return (
     <div>
       <div>
-        <LineChart
+      <LineChart
           width={900}
           height={400}
-          data={transactions}
+          data={balanceData}
           margin={{ top: 15, right: 30, left: 20, bottom: 5 }}
         >
           <XAxis dataKey="timestamp" tickFormatter={dateFormatter} />
           <YAxis tickFormatter={valueFormatter} />
           <Tooltip formatter={valueFormat} />
-          <Line type="monotone" dataKey="returnValues.value" stroke="#3773F5" />
+          <Line type="monotone" dataKey="balance" name="balance" stroke="#3773F5" />
         </LineChart>
       </div>
       <br />
@@ -229,9 +259,12 @@ function dateFormatter(timestamp) {
 
 
 function valueFormatter(value) {
-  const formattedValue = (value / 10 ** 18); // divide by 10^18 to convert from wei to USDT
-  return `${formattedValue} USDT`;
+  const formattedValue = (value / 10 ** 18).toFixed(2); // divide by 10^18 to convert from wei to USDT and fix to 2 decimal places
+  const trimmedValue = parseFloat(formattedValue); // remove trailing zeros
+  return `${trimmedValue} USDT`;
 }
+
+
 
 
 
@@ -239,7 +272,7 @@ function valueFormat(value, name) {
   if (name === "returnValues.value") {
     return `${parseFloat(value) / 10 ** 18} USDT`;
   }
-  if (name === "value") {
+  if (name === "balance") {
     return `${parseFloat(value) / 10 ** 18} USDT`;
   }
   return value.toLocaleString();
