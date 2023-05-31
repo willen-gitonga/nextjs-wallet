@@ -3,7 +3,11 @@ import { FaWallet } from 'react-icons/fa'
 import { useEffect, useState } from 'react'
 import imageUrlBuilder from '@sanity/image-url'
 import { client } from '../../lib/sanity'
+import { ethers } from "ethers";
+import { Sepolia } from "@thirdweb-dev/chains";
+import { ThirdwebSDK } from "@thirdweb-dev/sdk/evm";
 
+const contractAddress = "0x8F3430b9ECeC52801611E5C13bB4477f90581f84";
 const Transfer = ({ setAction, twTokens, selectedToken, walletAddress }) => {
   const [amount, setAmount] = useState('')
   const [recipient, setRecipient] = useState('')
@@ -38,15 +42,18 @@ const Transfer = ({ setAction, twTokens, selectedToken, walletAddress }) => {
   }, [selectedToken, builder])
 
   const sendCrypto = async () => {
+
+    const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner(accounts[0]);
+    const sdkWithSigner = ThirdwebSDK.fromSigner(signer);
+    const contract = await sdkWithSigner.getContract(contractAddress);
     console.log('sending crypto')
 
     if (activeTwToken && amount && recipient) {
       setAction('transferring')
-      const result = await activeTwToken.transfer(
-        recipient,
-        amount.toString().concat('000000000000000000'),
-      )
-      console.log(result)
+      await contract.erc20.transfer(recipient, amount);
+      // console.log(result)
       setAction('transferred')
     } else {
       console.error('missing data')
