@@ -18,7 +18,9 @@ export default function TransactionHistory() {
   const [balanceData, setBalanceData] = useState([]);
   useEffect(() => {
     async function fetchTransactions() {
+      if (!Moralis.Core.isStarted){
       await Moralis.start({ apiKey: MORALIS_API_KEY });
+    }
 
       const web3 = new Web3(window.ethereum);
       await window.ethereum.enable();

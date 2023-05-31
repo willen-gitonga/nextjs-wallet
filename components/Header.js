@@ -42,9 +42,14 @@ const Header = ({ twTokens, sanityTokens, walletAddress, connectWallet}) => {
             Connect Wallet
           </Button>
         )}
-        <Link href={'/payment'}>
+        <Link href={'/dx'}>
         <Button style={{ backgroundColor: '#3773f5', color: '#000' }}>
           Load Wallet
+        </Button>
+        </Link>
+        <Link href={'/withdraw'}>
+        <Button style={{ backgroundColor: '#3773f5', color: '#000' }}>
+          Withdraw
         </Button>
         </Link>
         <Link href={'/wallet/?transfer=1'}>

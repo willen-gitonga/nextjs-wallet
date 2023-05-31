@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import styles from '../styles/PaymentForm.module.css';
 import { ethers } from "ethers";
+import { IoIosArrowBack } from 'react-icons/io';
 import ContractABI from '../ContractABI.json'
 import { sepolia } from "@thirdweb-dev/chains";
 import { ThirdwebSDK } from "@thirdweb-dev/sdk/evm";
@@ -106,9 +107,16 @@ const PaymentForm = () => {
       }, 12000);
     }
   }, [paymentStatus]);
+  const handleReturnToDashboard = () => {
+    router.push("/wallet");
+  };
 
   return (
-    
+    <div className={styles.container}>
+      <button onClick={handleReturnToDashboard} className={styles.returnButton}>
+        <IoIosArrowBack className={styles.arrow} />
+        Return to Dashboard
+      </button>
     <form className={styles.PaymentForm} onSubmit={handleSubmit}>
     <div>
     <h2 style={{ color: 'white'}}>Enter the details below to load your wallet</h2>
@@ -213,6 +221,7 @@ const PaymentForm = () => {
       )
     )}
   </form>
+  </div>
   );
   
 };
