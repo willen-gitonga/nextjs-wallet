@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import styles from '../styles/PaymentForm.module.css';
-import { ethers } from "ethers";
+import { ethers } from 'ethers';
 import { IoIosArrowBack } from 'react-icons/io';
-import ContractABI from '../ContractABI.json'
-import { sepolia } from "@thirdweb-dev/chains";
-import { ThirdwebSDK } from "@thirdweb-dev/sdk/evm";
+import ContractABI from '../ContractABI.json';
+import { sepolia } from '@thirdweb-dev/chains';
+import { ThirdwebSDK } from '@thirdweb-dev/sdk/evm';
 
-const sdk = new ThirdwebSDK("sepolia");
+const sdk = new ThirdwebSDK('sepolia');
 
-const contractAddress = "0x8F3430b9ECeC52801611E5C13bB4477f90581f84";
+const contractAddress = '0x8F3430b9ECeC52801611E5C13bB4477f90581f84';
 
 const PaymentForm = () => {
   const [cardNumber, setCardNumber] = useState('');
@@ -24,16 +24,15 @@ const PaymentForm = () => {
   const [amount, setAmount] = useState('');
   const router = useRouter();
 
-
   async function handleMint() {
     try {
-      const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner(accounts[0]);
       const sdkWithSigner = ThirdwebSDK.fromSigner(signer);
 
       if (amount === undefined || amount === '') {
-        console.error("Amount is not defined.");
+        console.error('Amount is not defined.');
         return;
       }
 
@@ -72,6 +71,7 @@ const PaymentForm = () => {
   const handleZipCodeChange = (e) => {
     setZipCode(e.target.value);
   };
+
   const handleAmountChange = (e) => {
     setAmount(e.target.value);
   };
@@ -80,18 +80,16 @@ const PaymentForm = () => {
     e.preventDefault();
     handleMint();
     setIsLoading(true);
-    
+
     // Simulate transaction processing
     setTimeout(() => {
       if (
         (cardNumber === '4000 0000 0000 1091' &&
           expiryDate === '07/28' &&
           cvv === '123') ||
-        (cardNumber === '5200 0000 0000 0007' &&
-          expiryDate === '07/28' &&
-          cvv === '123')
+        (cardNumber === '5200 0000 0000 0007' && expiryDate === '07/28' && cvv === '123')
       ) {
-        setPaymentStatus('Payment successful!You will be redirected to the wallet page');
+        setPaymentStatus('Payment is being processed! You will be redirected to the wallet page');
         // Call handleMint with the captured amount
       } else {
         setPaymentStatus('Payment failed. Please check your card details.');
@@ -101,14 +99,15 @@ const PaymentForm = () => {
   };
 
   useEffect(() => {
-    if (paymentStatus === 'Payment successful!You will be redirected to the wallet page') {
+    if (paymentStatus === 'Payment is being processed! You will be redirected to the wallet page') {
       setTimeout(() => {
         router.push('/wallet');
       }, 12000);
     }
   }, [paymentStatus]);
+
   const handleReturnToDashboard = () => {
-    router.push("/wallet");
+    router.push('/wallet');
   };
 
   return (
@@ -117,114 +116,116 @@ const PaymentForm = () => {
         <IoIosArrowBack className={styles.arrow} />
         Return to Dashboard
       </button>
-    <form className={styles.PaymentForm} onSubmit={handleSubmit}>
-    <div>
-    <h2 style={{ color: 'white'}}>Enter the details below to load your wallet</h2>
-    <br></br>
-      <label htmlFor="cardNumber">Card Number</label>
-      <input
-        className={styles.input}
-        type="text"
-        id="cardNumber"
-        value={cardNumber}
-        onChange={handleCardNumberChange}
-        required
-      />
-    </div>
-    <div>
-      <label htmlFor="expiryDate">Expiry Date</label>
-      <input
-        className={styles.input}
-        type="text"
-        id="expiryDate"
-        value={expiryDate}
-        onChange={handleExpiryDateChange}
-        required
-      />
-    </div>
-    <div>
-      <label htmlFor="cvv">CVV</label>
-      <input
-        className={styles.input}
-        type="text"
-        id="cvv"
-        value={cvv}
-        onChange={handleCvvChange}
-        required
-      />
-    </div>
-    <div>
-      <label htmlFor="fullName">Full Name</label>
-      <input
-        className={styles.input}
-        type="text"
-        id="fullName"
-        value={fullName}
-        onChange={handleFullNameChange}
-        required
-      />
-    </div>
-    <div>
-      <label htmlFor="address">Address</label>
-      <input
-        className={styles.input}
-        type="text"
-        id="address"
-        value={address}
-        onChange={handleAddressChange}
-        required
-      />
-    </div>
-    <div>
-      <label htmlFor="city">City</label>
-      <input
-        className={styles.input}
-        type="text"
-        id="city"
-        value={city}
-        onChange={handleCityChange}
-        required
-      />
-    </div>
-    <div>
-      <label htmlFor="zipCode">ZIP Code</label>
-      <input
-        className={styles.input}
-        type="text"
-        id="zipCode"
-        value={zipCode}
-        onChange={handleZipCodeChange}
-        required
-      />
-    </div>
-    <div>
-      <label htmlFor="amount">Amount</label>
-      <input
-        className={styles.input}
-        type="text"
-        id="amount"
-        value={amount}
-        onChange={handleAmountChange}
-        required
-      />
-    </div>
-    <button className={styles.button} type="submit">Pay Now</button>
-    {isLoading ? (
-      <div className={styles.loading}>Loading...</div>
-    ) : (
-      paymentStatus && (
-        <div
-          className={paymentStatus.includes('failed') ? styles.error : styles.success}
-        >
-          {paymentStatus}
+      <form className={styles.PaymentForm} onSubmit={handleSubmit}>
+        <div>
+          <h2 style={{ color: 'white' }}>Enter the details below to load your wallet</h2>
+          <br />
+          <label htmlFor="cardNumber">Card Number</label>
+          <input
+            className={styles.input}
+            type="text"
+            id="cardNumber"
+            value={cardNumber}
+            onChange={handleCardNumberChange}
+            required
+          />
         </div>
-      )
-    )}
-  </form>
-  </div>
+        <div>
+          <label htmlFor="expiryDate">Expiry Date</label>
+          <input
+            className={styles.input}
+            type="text"
+            id="expiryDate"
+            value={expiryDate}
+            onChange={handleExpiryDateChange}
+            required
+          />
+        </div>
+        <div>
+          <label htmlFor="cvv">CVV</label>
+          <input
+            className={styles.input}
+            type="text"
+            id="cvv"
+            value={cvv}
+            onChange={handleCvvChange}
+            required
+          />
+        </div>
+        <div>
+          <label htmlFor="fullName">Full Name</label>
+          <input
+            className={styles.input}
+            type="text"
+            id="fullName"
+            value={fullName}
+            onChange={handleFullNameChange}
+            required
+          />
+        </div>
+        <div>
+          <label htmlFor="address">Address</label>
+          <input
+            className={styles.input}
+            type="text"
+            id="address"
+            value={address}
+            onChange={handleAddressChange}
+            required
+          />
+        </div>
+        <div>
+          <label htmlFor="city">City</label>
+          <input
+            className={styles.input}
+            type="text"
+            id="city"
+            value={city}
+            onChange={handleCityChange}
+            required
+          />
+        </div>
+        <div>
+          <label htmlFor="zipCode">ZIP Code</label>
+          <input
+            className={styles.input}
+            type="text"
+            id="zipCode"
+            value={zipCode}
+            onChange={handleZipCodeChange}
+            required
+          />
+        </div>
+        <div>
+          <label htmlFor="amount">Amount- USD</label>
+          <input
+            className={styles.input}
+            type="text"
+            id="amount"
+            value={amount}
+            onChange={handleAmountChange}
+            required
+          />
+        </div>
+        <button className={styles.button} type="submit">
+          Load wallet
+        </button>
+        
+        {isLoading ? (
+          <div className={styles.loading}>
+            <div className={styles.spinner}></div>
+            Loading...
+          </div>
+        ) : (
+          paymentStatus && (
+            <div className={paymentStatus.includes('failed') ? styles.error : styles.success}>
+              {paymentStatus}
+            </div>
+          )
+        )}
+      </form>
+    </div>
   );
-  
 };
 
 export default PaymentForm;
-

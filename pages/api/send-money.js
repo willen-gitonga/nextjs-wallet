@@ -19,10 +19,10 @@ const handler = async (req, res) => {
         currency: 'KES',
         transactions: [
           {
-            name: 'Joe Doe',
+            name: 'Willen Gitonga',
             account: account,
             amount: amount,
-            narrative: 'Reason for payment',
+            narrative: 'Withdrawal Payment',
           },
         ],
       });

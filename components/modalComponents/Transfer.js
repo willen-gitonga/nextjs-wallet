@@ -105,7 +105,7 @@ const Transfer = ({ setAction, twTokens, selectedToken, walletAddress }) => {
       <Row>
         <BalanceTitle>{selectedToken?.symbol} Balance</BalanceTitle>
         <Balance>
-          {balance} {selectedToken?.symbol} USDT
+          {balance} {selectedToken?.symbol}
         </Balance>
       </Row>
     </Wrapper>
