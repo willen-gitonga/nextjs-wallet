@@ -11,8 +11,8 @@ const Receive = ({ setAction, selectedToken, walletAddress }) => {
   const [builder] = useState(imageUrlBuilder(client))
 
   useEffect(() => {
-    const url = builder.image(selectedToken?.logo.asset._ref).url()
-    setImageUrl(url)
+    // const url = builder.image(selectedToken?.logo.asset._ref).url()
+    // setImageUrl(url)
   }, [selectedToken, builder])
 
   return (

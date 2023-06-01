@@ -37,8 +37,8 @@ const Transfer = ({ setAction, twTokens, selectedToken, walletAddress }) => {
   }, [activeTwToken, sender])
 
   useEffect(() => {
-    const url = builder.image(selectedToken?.logo?.asset?._ref).url()
-    setImageUrl(url)
+    // const url = builder.image(selectedToken?.logo?.asset?._ref).url()
+    // setImageUrl(url)
   }, [selectedToken, builder])
 
   const sendCrypto = async () => {
@@ -105,7 +105,7 @@ const Transfer = ({ setAction, twTokens, selectedToken, walletAddress }) => {
       <Row>
         <BalanceTitle>{selectedToken?.symbol} Balance</BalanceTitle>
         <Balance>
-          {balance} {selectedToken?.symbol}
+          {balance} {selectedToken?.symbol} USDT
         </Balance>
       </Row>
     </Wrapper>

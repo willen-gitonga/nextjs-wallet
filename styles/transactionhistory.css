@@ -5,7 +5,8 @@
 
 .mint-transactions,
 .transfer-transactions,
-.receive-transactions {
+.received-transactions,
+.withdrawal-transactions {
   width: 100%;
   border: 1px solid #ddd;
   border-radius: 5px;
@@ -16,7 +17,9 @@
   margin-right: 10px;
 }
 
-.transfer-transactions {
+.transfer-transactions,
+.received-transactions,
+.withdrawal-transactions {
   margin-left: 10px;
 }
 
@@ -45,13 +48,15 @@
 
 .active-mint-transactions,
 .active-transfer-transactions,
-.active-receive-transactions {
+.active-received-transactions,
+.active-withdrawal-transactions {
   display: block;
 }
 
 .inactive-mint-transactions,
 .inactive-transfer-transactions,
-.inactive-receive-transactions {
+.inactive-received-transactions,
+.inactive-withdrawal-transactions {
   display: none;
 }
 
