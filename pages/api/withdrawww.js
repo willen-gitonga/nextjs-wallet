@@ -1,8 +1,8 @@
 import axios from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
 
-const CONSUMER_KEY = "Aj18rEfHxdgAaRVHvV1XmAH9vFnrvrOV";
-const CONSUMER_SECRET = "KGdjkdfP3prf9zv6";
+const CONSUMER_KEY = "";
+const CONSUMER_SECRET = "";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -12,7 +12,7 @@ export default async function handler(req, res) {
 
   const data = {
     initiatorName: "initiator_1",
-    securityCredential: "Ev3L2EDVpUKAf603qnJSTyOZi7jTuROMB94v5ur0A2sTY3Wq6/yJwp1kqLOwFZvhLDKXVexxdUPs25+gR4eD9kkuWi85+UjGiC3n2GH+yJK+cpBqSO40+08g6yb5w+we3rvsQZeVFaiIgw4Y1oIHvfy02DNOAf8uWHTI8RHLVknjCLlCkYNXe+ZC5ZRrCVli1rwHgKR17bxTng+VVXFVcoE+SYplRZ/8+ca94NiUlajg4+7IKExvTKLn+6yRQg9EJ/BITynY3V8/cTznEpnU8FZaCQYiyW8f7Y0iEa9GLZP8SQ5OuS9aW1Y4iSiS7e1noakQHIzO8tYKncxAXfGtAg==",
+    securityCredential: "",
     commandID: "BusinessPayment",
     amount,
     partyA: "600737",

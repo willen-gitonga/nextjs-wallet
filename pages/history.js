@@ -5,7 +5,7 @@ import ContractABI from '../ContractABI.json'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 
 
-const MORALIS_API_KEY = "motI9dRnMSeempoMPYnx4SgGYG2qfmfQWTZjoeO45JwT0FgqOOh5dIXX2Ad5NLCW"; // Replace with your own Moralis API key
+const MORALIS_API_KEY = ""; // Replace with your own Moralis API key
 const CONTRACT_ADDRESS = "0x8F3430b9ECeC52801611E5C13bB4477f90581f84"; // Replace with the address of your token contract
 const CONTRACT_ABI = ContractABI;
 

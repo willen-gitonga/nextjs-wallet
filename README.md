@@ -1,9 +1,3 @@
-
-public key: pk_sbox_pugnfdkiyfmkqtfnkqrmn7mdxar
-secret key: sk_sbox_u7brgpsi42huejwsr677gctcbyg
-
-
-
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started

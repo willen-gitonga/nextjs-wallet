@@ -8,8 +8,8 @@ const handler = async (req, res) => {
     const { account, amount } = req.body;
 
     const intasend = new IntaSend(
-      'ISPubKey_test_1474b34e-bab1-4afe-a2e0-a468268bd0a0',
-      'ISSecretKey_test_784e2a1b-ea1f-403d-8033-92d07aad4f6c',
+      '',
+      '',
       true
     );
 

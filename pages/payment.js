@@ -48,8 +48,8 @@ const PesapalPayment = () => {
         'Accept': 'application/json'
       },
       body: JSON.stringify({
-        consumer_key: 'qkio1BGGYAXTu2JOfm7XSXNruoZsrqEW',
-        consumer_secret: 'osGQ364R49cXKeOYSpaOnT++rHs='
+        consumer_key: '',
+        consumer_secret: ''
       })
     });
   
